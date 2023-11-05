@@ -5,28 +5,28 @@
 global:
   image:
     # -- Global image registry of KEDA components
-    registry: null
+    registry: docker.io
 
 image:
   keda:
     # -- Image registry of KEDA operator
     registry: null
     # -- Image name of KEDA operator
-    repository: ghcr.io/kedacore/keda
+    repository: giantswarm/keda
     # -- Image tag of KEDA operator. Optional, given app version of Helm chart is used by default
     tag: ""
   metricsApiServer:
     # -- Image registry of KEDA Metrics API Server
     registry: null
     # -- Image name of KEDA Metrics API Server
-    repository: ghcr.io/kedacore/keda-metrics-apiserver
+    repository: giantswarm/keda-metrics-apiserver
     # -- Image tag of KEDA Metrics API Server. Optional, given app version of Helm chart is used by default
     tag: ""
   webhooks:
     # -- Image registry of KEDA admission-webhooks
     registry: null
     # -- Image name of KEDA admission-webhooks
-    repository: ghcr.io/kedacore/keda-admission-webhooks
+    repository: giantswarm/keda-admission-webhooks
     # -- Image tag of KEDA admission-webhooks . Optional, given app version of Helm chart is used by default
     tag: ""
   # -- Image pullPolicy for all KEDA components
@@ -73,16 +73,16 @@ operator:
   # Disabling compression simply means that turns off the process of making data smaller for K8s restAPI in client-go for faster transmission.
   disableCompression: true
   # -- [Affinity] for pod scheduling for KEDA operator. Takes precedence over the `affinity` field
-  affinity: {}
-    # podAntiAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #   - labelSelector:
-    #       matchExpressions:
-    #       - key: app
-    #         operator: In
-    #         values:
-    #         - keda-operator
-    #     topologyKey: "kubernetes.io/hostname"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - keda-operator
+        topologyKey: "kubernetes.io/hostname"
   # -- Liveness probes for operator ([docs](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/))
   livenessProbe:
     initialDelaySeconds: 25
@@ -115,16 +115,16 @@ metricsServer:
   # -- Enable metric server to use host network
   useHostNetwork: false
   # -- [Affinity] for pod scheduling for Metrics API Server. Takes precedence over the `affinity` field
-  affinity: {}
-    # podAntiAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #   - labelSelector:
-    #       matchExpressions:
-    #       - key: app
-    #         operator: In
-    #         values:
-    #         - keda-operator-metrics-apiserver
-    #     topologyKey: "kubernetes.io/hostname"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - keda-operator-metrics-apiserver
+        topologyKey: "kubernetes.io/hostname"
   # -- Liveness probes for Metrics API Server ([docs](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/))
   livenessProbe:
     initialDelaySeconds: 5
@@ -170,57 +170,57 @@ webhooks:
   # -- Capability to configure the number of replicas for KEDA admission webhooks
   replicaCount: 1
   # -- [Affinity] for pod scheduling for KEDA admission webhooks. Takes precedence over the `affinity` field
-  affinity: {}
-    # podAntiAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #   - labelSelector:
-    #       matchExpressions:
-    #       - key: app
-    #         operator: In
-    #         values:
-    #         - keda-operator
-    #     topologyKey: "kubernetes.io/hostname"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - keda-operator
+        topologyKey: "kubernetes.io/hostname"
 
   # -- [Failure policy](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy) to use with KEDA admission webhooks
   failurePolicy: Ignore
 
 upgradeStrategy:
   # -- Capability to configure [Deployment upgrade strategy] for operator
-  operator: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
-    #   maxSurge: 1
-
+  operator:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   # -- Capability to configure [Deployment upgrade strategy] for Metrics Api Server
-  metricsApiServer: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
-    #   maxSurge: 1
-
+  metricsApiServer:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   # -- Capability to configure [Deployment upgrade strategy] for Admission webhooks
-  webhooks: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
-    #   maxSurge: 1
+  webhooks:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+
+networkPolicy:
+  enabled: true
+  flavor: cilium
 
 podDisruptionBudget:
   # -- Capability to configure [Pod Disruption Budget]
-  operator: {}
-    #  minAvailable: 1
-    #  maxUnavailable: 1
-
+  operator:
+    minAvailable: 1
+    # maxUnavailable: 1
   # -- Capability to configure [Pod Disruption Budget]
-  metricServer: {}
-    #  minAvailable: 1
-    #  maxUnavailable: 1
-
+  metricServer:
+    minAvailable: 1
+    # maxUnavailable: 1
   # -- Capability to configure [Pod Disruption Budget]
-  webhooks: {}
-    #  minAvailable: 1
-    #  maxUnavailable: 1
+  webhooks:
+    minAvailable: 1
+    # maxUnavailable: 1
 
 # -- Custom labels to add into metadata
 additionalLabels:
@@ -391,25 +391,25 @@ podSecurityContext:
   # @default -- [See below](#KEDA-is-secure-by-default)
   operator:
     runAsNonRoot: true
-    # runAsUser: 1000
-    # runAsGroup: 1000
-    # fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
 
   # -- [Pod security context] of the KEDA metrics apiserver pod
   # @default -- [See below](#KEDA-is-secure-by-default)
   metricServer:
     runAsNonRoot: true
-    # runAsUser: 1000
-    # runAsGroup: 1000
-    # fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
 
   # -- [Pod security context] of the KEDA admission webhooks
   # @default -- [See below](#KEDA-is-secure-by-default)
   webhooks:
     runAsNonRoot: true
-    # runAsUser: 1000
-    # runAsGroup: 1000
-    # fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
 
 service:
   # -- KEDA Metric Server service type
@@ -465,17 +465,17 @@ topologySpreadConstraints:
   webhooks: []
 
 # -- [Affinity] for pod scheduling for both KEDA operator and Metrics API Server
-affinity: {}
-  # podAntiAffinity:
-  #   requiredDuringSchedulingIgnoredDuringExecution:
-  #   - labelSelector:
-  #       matchExpressions:
-  #       - key: app
-  #         operator: In
-  #         values:
-  #         - keda-operator
-  #         - keda-operator-metrics-apiserver
-  #     topologyKey: "kubernetes.io/hostname"
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - keda-operator
+          - keda-operator-metrics-apiserver
+      topologyKey: "kubernetes.io/hostname"
 
 # -- priorityClassName for all KEDA components
 priorityClassName: ""
@@ -548,14 +548,14 @@ volumes:
 prometheus:
   metricServer:
     # -- Enable metric server Prometheus metrics expose
-    enabled: false
+    enabled: true
     # -- HTTP port used for exposing metrics server prometheus metrics
     port: 8080
     # -- HTTP port name for exposing metrics server prometheus metrics
     portName: metrics
     serviceMonitor:
       # -- Enables ServiceMonitor creation for the Prometheus Operator
-      enabled: false
+      enabled: true
       # -- JobLabel selects the label from the associated Kubernetes service which will be used as the job label for all metrics. [ServiceMonitor Spec]
       jobLabel: ""
       # -- TargetLabels transfers labels from the Kubernetes `Service` onto the created metrics
@@ -603,12 +603,12 @@ prometheus:
       metricRelabelings: []
   operator:
     # -- Enable KEDA Operator prometheus metrics expose
-    enabled: false
+    enabled: true
     # -- Port used for exposing KEDA Operator prometheus metrics
     port: 8080
     serviceMonitor:
       # -- Enables ServiceMonitor creation for the Prometheus Operator
-      enabled: false
+      enabled: true
       # -- JobLabel selects the label from the associated Kubernetes service which will be used as the job label for all metrics. [ServiceMonitor Spec]
       jobLabel: ""
       # -- TargetLabels transfers labels from the Kubernetes `Service` onto the created metrics
@@ -674,12 +674,12 @@ prometheus:
         #   labels:
   webhooks:
     # -- Enable KEDA admission webhooks prometheus metrics expose
-    enabled: false
+    enabled: true
     # -- Port used for exposing KEDA admission webhooks prometheus metrics
     port: 8080
     serviceMonitor:
       # -- Enables ServiceMonitor creation for the Prometheus webhooks
-      enabled: false
+      enabled: true
       # -- jobLabel selects the label from the associated Kubernetes service which will be used as the job label for all metrics. [ServiceMonitor Spec]
       jobLabel: ""
       # -- TargetLabels transfers labels from the Kubernetes `Service` onto the created metrics
@@ -737,7 +737,7 @@ certificates:
   mountPath: /certs
   certManager:
     # -- Enables Cert-manager for certificate management
-    enabled: false
+    enabled: true
     # -- Certificate duration
     duration: 8760h0m0s # 1 year
     # -- Certificate renewal time before expiration
