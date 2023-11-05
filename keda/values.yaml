@@ -2,19 +2,34 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+global:
+  image:
+    # -- Global image registry of KEDA components
+    registry: docker.io
+
 image:
   keda:
-    repository: ghcr.io/kedacore/keda
-    # Allows people to override tag if they don't want to use the app version
-    tag:
+    # -- Image registry of KEDA operator
+    registry: null
+    # -- Image name of KEDA operator
+    repository: giantswarm/keda
+    # -- Image tag of KEDA operator. Optional, given app version of Helm chart is used by default
+    tag: ""
   metricsApiServer:
-    repository: ghcr.io/kedacore/keda-metrics-apiserver
-    # Allows people to override tag if they don't want to use the app version
-    tag:
+    # -- Image registry of KEDA Metrics API Server
+    registry: null
+    # -- Image name of KEDA Metrics API Server
+    repository: giantswarm/keda-metrics-apiserver
+    # -- Image tag of KEDA Metrics API Server. Optional, given app version of Helm chart is used by default
+    tag: ""
   webhooks:
-    repository: ghcr.io/kedacore/keda-admission-webhooks
-    # Allows people to override tag if they don't want to use the app version
-    tag:
+    # -- Image registry of KEDA admission-webhooks
+    registry: null
+    # -- Image name of KEDA admission-webhooks
+    repository: giantswarm/keda-admission-webhooks
+    # -- Image tag of KEDA admission-webhooks . Optional, given app version of Helm chart is used by default
+    tag: ""
+  # -- Image pullPolicy for all KEDA components
   pullPolicy: Always
 
 # Kubernetes cluster domain
@@ -31,16 +46,16 @@ operator:
   name: keda-operator
   replicaCount: 1
   # -- Affinity for pod scheduling https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/ for KEDA operator. Takes precedence over the `affinity` field
-  affinity: {}
-    # podAntiAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #   - labelSelector:
-    #       matchExpressions:
-    #       - key: app
-    #         operator: In
-    #         values:
-    #         - keda-operator
-    #     topologyKey: "kubernetes.io/hostname"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - keda-operator
+        topologyKey: "kubernetes.io/hostname"
 
 metricsServer:
   replicaCount: 1
@@ -48,61 +63,65 @@ metricsServer:
   dnsPolicy: ClusterFirst
   useHostNetwork: false
   # -- Affinity for pod scheduling https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/ for Metrics API Server. Takes precedence over the `affinity` field
-  affinity: {}
-    # podAntiAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #   - labelSelector:
-    #       matchExpressions:
-    #       - key: app
-    #         operator: In
-    #         values:
-    #         - keda-operator-metrics-apiserver
-    #     topologyKey: "kubernetes.io/hostname"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - keda-operator-metrics-apiserver
+        topologyKey: "kubernetes.io/hostname"
 
 webhooks:
   enabled: true # This value will be removed in keda v2.12
   name: keda-admission-webhooks
   replicaCount: 1
   # -- Affinity for pod scheduling https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/ for KEDA operator. Takes precedence over the `affinity` field
-  affinity: {}
-    # podAntiAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #   - labelSelector:
-    #       matchExpressions:
-    #       - key: app
-    #         operator: In
-    #         values:
-    #         - keda-operator
-    #     topologyKey: "kubernetes.io/hostname"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - keda-operator
+        topologyKey: "kubernetes.io/hostname"
   failurePolicy: Ignore
 
 upgradeStrategy:
-  operator: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
-    #   maxSurge: 1
-  metricsApiServer: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
-    #   maxSurge: 1
-  webhooks: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
-    #   maxSurge: 1
+  operator:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  metricsApiServer:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  webhooks:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
 
-podDisruptionBudget: {}
-  # operator:
-  #   minAvailable: 1
-  #   maxUnavailable: 1
-  # metricServer:
-  #   minAvailable: 1
-  #   maxUnavailable: 1
-  # webhooks:
-  #   minAvailable: 1
-  #   maxUnavailable: 1
+networkPolicy:
+  enabled: true
+  flavor: cilium
+
+podDisruptionBudget:
+  operator:
+    minAvailable: 1
+    # maxUnavailable: 1
+  metricServer:
+    minAvailable: 1
+    # maxUnavailable: 1
+  webhooks:
+    minAvailable: 1
+    # maxUnavailable: 1
 
 # -- Custom labels to add into metadata
 additionalLabels:
@@ -244,19 +263,19 @@ securityContext:
 podSecurityContext:
   operator:
     runAsNonRoot: true
-    # runAsUser: 1000
-    # runAsGroup: 1000
-    # fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
   metricServer:
     runAsNonRoot: true
-    # runAsUser: 1000
-    # runAsGroup: 1000
-    # fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
   webhooks:
     runAsNonRoot: true
-    # runAsUser: 1000
-    # runAsGroup: 1000
-    # fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
 
 service:
   type: ClusterIP
@@ -305,17 +324,17 @@ topologySpreadConstraints: {}
   # webhooks: []
 
 # -- Affinity for pod scheduling https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/ for both KEDA operator and Metrics API Server
-affinity: {}
-  # podAntiAffinity:
-  #   requiredDuringSchedulingIgnoredDuringExecution:
-  #   - labelSelector:
-  #       matchExpressions:
-  #       - key: app
-  #         operator: In
-  #         values:
-  #         - keda-operator
-  #         - keda-operator-metrics-apiserver
-  #     topologyKey: "kubernetes.io/hostname"
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - keda-operator
+          - keda-operator-metrics-apiserver
+      topologyKey: "kubernetes.io/hostname"
 
 ## Optional priorityClassName for KEDA Operator and Metrics Adapter
 priorityClassName: ""
@@ -355,13 +374,13 @@ volumes:
 
 prometheus:
   metricServer:
-    enabled: false
+    enabled: true
     port: 9022
     portName: metrics
     path: /metrics
     serviceMonitor:
       # Enables ServiceMonitor creation for the Prometheus Operator
-      enabled: false
+      enabled: true
       jobLabel:
       targetLabels: []
       podTargetLabels: []
@@ -380,11 +399,11 @@ prometheus:
       additionalLabels: {}
       relabelings: []
   operator:
-    enabled: false
+    enabled: true
     port: 8080
     serviceMonitor:
       # Enables ServiceMonitor creation for the Prometheus Operator
-      enabled: false
+      enabled: true
       jobLabel:
       targetLabels: []
       podTargetLabels: []
@@ -417,11 +436,11 @@ prometheus:
         #   for: 2m
         #   labels:
   webhooks:
-    enabled: false
+    enabled: true
     port: 8080
     serviceMonitor:
       # Enables ServiceMonitor creation for the Prometheus webhooks
-      enabled: false
+      enabled: true
       jobLabel:
       targetLabels: []
       podTargetLabels: []
@@ -443,7 +462,7 @@ certificates:
   secretName: kedaorg-certs
   mountPath: /certs
   certManager:
-    enabled: false
+    enabled: true
     # If generateCA is false, the secret with the CA
     # has to be annotated with 'cert-manager.io/allow-direct-injection: "true"'
     generateCA: true

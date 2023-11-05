@@ -1,0 +1,24 @@
+{{- if and .Values.networkPolicy.enabled (eq .Values.networkPolicy.flavor "cilium") }}
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ .Values.operator.name }}-metrics-apiserver
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- toYaml .Values.additionalAnnotations | nindent 4 }}
+  labels:
+    app: {{ .Values.operator.name }}-metrics-apiserver
+    app.kubernetes.io/name: {{ .Values.operator.name }}-metrics-apiserver
+    {{- include "keda.labels" . | indent 4 }}
+spec:
+  endpointSelector:
+    matchLabels:
+      app: {{ .Values.operator.name }}-metrics-apiserver
+  egress:
+    - toEntities:
+        - kube-apiserver
+        - cluster
+  ingress:
+    - fromEntities:
+        - cluster
+{{ end }}
