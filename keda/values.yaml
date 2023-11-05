@@ -113,6 +113,10 @@ operator:
   dnsPolicy: ClusterFirst
   # -- Enable operator to use host network
   useHostNetwork: false
+  # -- K8s client QPS (Queries Per Second) throttling for the KEDA operator
+  kubeAPIQPS: 20.0
+  # -- K8s client Burst throttling for the KEDA operator
+  kubeAPIBurst: 30
   # -- [Affinity] for pod scheduling for KEDA operator. Takes precedence over the `affinity` field
   affinity:
     podAntiAffinity:
@@ -230,6 +234,10 @@ webhooks:
   useHostNetwork: false
   # -- Name of the KEDA admission webhooks
   name: keda-admission-webhooks
+  # -- K8s client QPS (Queries Per Second) throttling for the KEDA admission webhooks
+  kubeAPIQPS: 20.0
+  # -- K8s client Burst throttling for the KEDA admission webhooks
+  kubeAPIBurst: 30
   # -- ReplicaSets for this Deployment you want to retain (Default: 10)
   revisionHistoryLimit: 10
   # -- Capability to configure the number of replicas for KEDA admission webhooks
