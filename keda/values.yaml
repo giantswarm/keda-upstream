@@ -388,7 +388,10 @@ prometheus:
       targetPort:
       interval:
       scrapeTimeout:
-      relabellings: []
+      relabellings:
+        # Add app label.
+        - targetLabel: app
+          replacement: keda
       additionalLabels: {}
     podMonitor:
       # Enables PodMonitor creation for the Prometheus Operator
@@ -411,7 +414,10 @@ prometheus:
       targetPort:
       interval:
       scrapeTimeout:
-      relabellings: []
+      relabellings:
+        # Add app label.
+        - targetLabel: app
+          replacement: keda
       additionalLabels: {}
     podMonitor:
       # Enables PodMonitor creation for the Prometheus Operator
@@ -448,7 +454,10 @@ prometheus:
       targetPort:
       interval:
       scrapeTimeout:
-      relabellings: []
+      relabellings:
+        # Add app label.
+        - targetLabel: app
+          replacement: keda
       additionalLabels: {}
     prometheusRules:
       # Enables PrometheusRules creation for the Prometheus Operator

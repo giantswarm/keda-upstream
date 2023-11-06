@@ -40,7 +40,7 @@ spec:
     {{- end }}
     {{- with .Values.prometheus.operator.serviceMonitor.relabellings }}
     relabelings:
-    {{ toYaml . | indent 6 }}
+{{ toYaml . | indent 6 }}
     {{- end }}
   namespaceSelector:
     matchNames:
