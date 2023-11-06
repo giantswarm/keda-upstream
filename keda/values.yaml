@@ -482,7 +482,10 @@ prometheus:
       # -- DEPRECATED. List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
       relabellings: []
       # -- List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
-      relabelings: []
+      relabelings:
+        # Add app label.
+        - targetLabel: app
+          replacement: keda
       # --  Additional labels to add for metric server using ServiceMonitor crd (prometheus operator)
       additionalLabels: {}
     podMonitor:
@@ -524,7 +527,10 @@ prometheus:
       # -- DEPRECATED. List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
       relabellings: []
       # -- List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
-      relabelings: []
+      relabelings:
+        # Add app label.
+        - targetLabel: app
+          replacement: keda
       # -- Additional labels to add for metric server using ServiceMonitor crd (prometheus operator)
       additionalLabels: {}
     podMonitor:
@@ -582,7 +588,10 @@ prometheus:
       # -- DEPRECATED. List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
       relabellings: []
       # -- List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
-      relabelings: []
+      relabelings:
+        # Add app label.
+        - targetLabel: app
+          replacement: keda
       # -- Additional labels to add for metric server using ServiceMonitor crd (prometheus operator)
       additionalLabels: {}
     prometheusRules:
