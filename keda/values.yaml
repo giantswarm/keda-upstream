@@ -37,7 +37,7 @@ clusterDomain: cluster.local
 
 verticalPodAutoscaler:
   keda:
-    enabled: false
+    enabled: true
     cpu:
       minAllowed: 20m
       maxAllowed: 2
@@ -45,7 +45,7 @@ verticalPodAutoscaler:
       minAllowed: 200Mi
       maxAllowed: 2Gi
   metricsApiServer:
-    enabled: false
+    enabled: true
     cpu:
       minAllowed: 20m
       maxAllowed: 2
