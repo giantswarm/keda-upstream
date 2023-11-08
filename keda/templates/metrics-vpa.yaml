@@ -2,8 +2,10 @@
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
-  name: keda-operator-metrics-apiserver-vpa
+  name: {{ .Values.operator.name }}-metrics-apiserver-vpa
   namespace: {{ .Release.Namespace }}
+  labels:
+  {{- include "keda.labels" . | indent 4 }}
 spec:
   targetRef:
     apiVersion: "apps/v1"
