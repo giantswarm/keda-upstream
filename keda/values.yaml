@@ -35,6 +35,24 @@ image:
 # -- Kubernetes cluster domain
 clusterDomain: cluster.local
 
+verticalPodAutoscaler:
+  keda:
+    enabled: false
+    cpu:
+      minAllowed: 20m
+      maxAllowed: 2
+    memory:
+      minAllowed: 200Mi
+      maxAllowed: 2Gi
+  metricsApiServer:
+    enabled: false
+    cpu:
+      minAllowed: 20m
+      maxAllowed: 2
+    memory:
+      minAllowed: 200Mi
+      maxAllowed: 2Gi
+
 crds:
   # -- Defines whether the KEDA CRDs have to be installed or not.
   install: true
