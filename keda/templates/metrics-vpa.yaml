@@ -1,0 +1,26 @@
+{{- if .Values.vpa.metricsApiServer.enabled }}
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: keda-operator-metrics-apiserver-vpa
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: {{ .Values.operator.name }}-metrics-apiserver
+  resourcePolicy:
+    containerPolicies:
+      - containerName: '*'
+        controlledResources:
+          - cpu
+          - memory
+        maxAllowed:
+          cpu: {{ .Values.vpa.metricsApiServer.cpu.maxAllowed }}
+          memory: {{ .Values.vpa.metricsApiServer.memory.maxAllowed }}
+        minAllowed:
+          cpu: {{ .Values.vpa.metricsApiServer.cpu.minAllowed }}
+          memory: {{ .Values.vpa.metricsApiServer.memory.minAllowed }}
+  updatePolicy:
+    updateMode: "Auto"
+{{- end }}
