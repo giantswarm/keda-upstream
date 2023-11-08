@@ -35,6 +35,24 @@ image:
 # Kubernetes cluster domain
 clusterDomain: cluster.local
 
+verticalPodAutoscaler:
+  keda:
+    enabled: false
+    cpu:
+      minAllowed: 20m
+      maxAllowed: 2
+    memory:
+      minAllowed: 200Mi
+      maxAllowed: 2Gi
+  metricsApiServer:
+    enabled: false
+    cpu:
+      minAllowed: 20m
+      maxAllowed: 2
+    memory:
+      minAllowed: 200Mi
+      maxAllowed: 2Gi
+
 crds:
   install: true
 
@@ -75,7 +93,8 @@ metricsServer:
         topologyKey: "kubernetes.io/hostname"
 
 webhooks:
-  enabled: true # This value will be removed in keda v2.12
+  # This value will be removed in keda v2.12
+  enabled: true
   name: keda-admission-webhooks
   replicaCount: 1
   # -- Affinity for pod scheduling https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/ for KEDA operator. Takes precedence over the `affinity` field
