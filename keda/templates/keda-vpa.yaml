@@ -4,8 +4,10 @@ kind: VerticalPodAutoscaler
 metadata:
   name: {{ .Values.operator.name }}-vpa
   namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- toYaml .Values.additionalAnnotations | nindent 4 }}
   labels:
-  {{- include "keda.labels" . | indent 4 }}
+    {{- include "keda.labels" . | indent 4 }}
 spec:
   targetRef:
     apiVersion: "apps/v1"
