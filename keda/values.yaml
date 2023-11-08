@@ -35,7 +35,7 @@ image:
 # Kubernetes cluster domain
 clusterDomain: cluster.local
 
-vpa:
+verticalPodAutoscaler:
   keda:
     enabled: false
     cpu:

@@ -1,4 +1,4 @@
-{{- if .Values.vpa.keda.enabled }}
+{{- if .Values.verticalPodAutoscaler.keda.enabled }}
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
@@ -16,11 +16,11 @@ spec:
           - cpu
           - memory
         maxAllowed:
-          cpu: {{ .Values.vpa.keda.cpu.maxAllowed }}
-          memory: {{ .Values.vpa.keda.memory.maxAllowed }}
+          cpu: {{ .Values.verticalPodAutoscaler.keda.cpu.maxAllowed }}
+          memory: {{ .Values.verticalPodAutoscaler.keda.memory.maxAllowed }}
         minAllowed:
-          cpu: {{ .Values.vpa.keda.cpu.minAllowed }}
-          memory: {{ .Values.vpa.keda.memory.minAllowed }}
+          cpu: {{ .Values.verticalPodAutoscaler.keda.cpu.minAllowed }}
+          memory: {{ .Values.verticalPodAutoscaler.keda.memory.minAllowed }}
   updatePolicy:
     updateMode: "Auto"
 {{- end }}
