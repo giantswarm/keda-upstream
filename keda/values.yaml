@@ -71,12 +71,6 @@ watchNamespace: ""
 # -- Name of secret to use to pull images to use to pull Docker images
 imagePullSecrets: []
 
-networkPolicy:
-  # -- Enable network policies
-  enabled: false
-  # -- Flavor of the network policies (cilium)
-  flavor: "cilium"
-
 operator:
   # -- Name of the KEDA operator
   name: keda-operator
@@ -223,8 +217,10 @@ upgradeStrategy:
       maxSurge: 1
 
 networkPolicy:
+  # -- Enable network policies
   enabled: true
-  flavor: cilium
+  # -- Flavor of the network policies (cilium)
+  flavor: "cilium"
 
 podDisruptionBudget:
   # -- Capability to configure [Pod Disruption Budget]
