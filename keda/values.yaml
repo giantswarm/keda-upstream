@@ -5,7 +5,7 @@
 global:
   image:
     # -- Global image registry of KEDA components
-    registry: docker.io
+    registry: gsoci.azurecr.io
 
 image:
   keda:
@@ -155,8 +155,14 @@ upgradeStrategy:
       maxSurge: 1
 
 networkPolicy:
+  # -- Enable network policies
   enabled: true
-  flavor: cilium
+  # -- Flavor of the network policies (cilium)
+  flavor: "cilium"
+  # -- Allow use of extra egress rules for cilium network policies
+  # cilium:
+  #   operator:
+  #     extraEgressRules: []
 
 podDisruptionBudget:
   # -- Capability to configure [Pod Disruption Budget]
