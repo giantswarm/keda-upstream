@@ -82,7 +82,7 @@ their default values.
 | `crds.install` | bool | `true` | Defines whether the KEDA CRDs have to be installed or not. |
 | `env` | list | `[]` | Additional environment variables that will be passed onto all KEDA components |
 | `extraObjects` | list | `[]` | Array of extra K8s manifests to deploy |
-| `global.image.registry` | string | `"docker.io"` | Global image registry of KEDA components |
+| `global.image.registry` | string | `"gsoci.azurecr.io"` | Global image registry of KEDA components |
 | `grpcTLSCertsSecret` | string | `""` | Set this if you are using an external scaler and want to communicate over TLS (recommended). This variable holds the name of the secret that will be mounted to the /grpccerts path on the Pod |
 | `hashiCorpVaultTLS` | string | `""` | Set this if you are using HashiCorp Vault and want to communicate over TLS (recommended). This variable holds the name of the secret that will be mounted to the /vault path on the Pod |
 | `http.keepAlive.enabled` | bool | `true` | Enable HTTP connection keep alive |
@@ -90,6 +90,7 @@ their default values.
 | `http.timeout` | int | `3000` | The default HTTP timeout to use for all scalers that use raw HTTP clients (some scalers use SDKs to access target services. These have built-in HTTP clients, and the timeout does not necessarily apply to them) |
 | `image.pullPolicy` | string | `"Always"` | Image pullPolicy for all KEDA components |
 | `imagePullSecrets` | list | `[]` | Name of secret to use to pull images to use to pull Docker images |
+| `networkPolicy.cilium` | object | `{"operator":{"extraEgressRules":[]}}` | Allow use of extra egress rules for cilium network policies |
 | `networkPolicy.enabled` | bool | `true` | Enable network policies |
 | `networkPolicy.flavor` | string | `"cilium"` | Flavor of the network policies (cilium) |
 | `nodeSelector` | object | `{}` | Node selector for pod scheduling ([docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/)) |
