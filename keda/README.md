@@ -82,7 +82,7 @@ their default values.
 | `crds.install` | bool | `true` | Defines whether the KEDA CRDs have to be installed or not. |
 | `env` | list | `[]` | Additional environment variables that will be passed onto all KEDA components |
 | `extraObjects` | list | `[]` | Array of extra K8s manifests to deploy |
-| `global.image.registry` | string | `"docker.io"` | Global image registry of KEDA components |
+| `global.image.registry` | string | `"gsoci.azurecr.io"` | Global image registry of KEDA components |
 | `grpcTLSCertsSecret` | string | `""` | Set this if you are using an external scaler and want to communicate over TLS (recommended). This variable holds the name of the secret that will be mounted to the /grpccerts path on the Pod |
 | `hashiCorpVaultTLS` | string | `""` | Set this if you are using HashiCorp Vault and want to communicate over TLS (recommended). This variable holds the name of the secret that will be mounted to the /vault path on the Pod |
 | `http.keepAlive.enabled` | bool | `true` | Enable HTTP connection keep alive |
