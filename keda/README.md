@@ -73,9 +73,9 @@ Kubernetes: `>=v1.24.0-0`
 | podAnnotations.keda | object | `{}` |  |
 | podAnnotations.metricsAdapter | object | `{}` |  |
 | podAnnotations.webhooks | object | `{}` |  |
-| podDisruptionBudget.metricServer.minAvailable | int | `1` |  |
-| podDisruptionBudget.operator.minAvailable | int | `1` |  |
-| podDisruptionBudget.webhooks.minAvailable | int | `1` |  |
+| podDisruptionBudget.metricServer | object | `{}` | Capability to configure [Pod Disruption Budget] |
+| podDisruptionBudget.operator | object | `{}` | Capability to configure [Pod Disruption Budget] |
+| podDisruptionBudget.webhooks | object | `{}` | Capability to configure [Pod Disruption Budget] |
 | podIdentity.activeDirectory.identity | string | `""` |  |
 | podIdentity.aws.irsa.audience | string | `"sts.amazonaws.com"` |  |
 | podIdentity.aws.irsa.enabled | bool | `false` |  |
