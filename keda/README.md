@@ -138,7 +138,7 @@ their default values.
 | `operator.revisionHistoryLimit` | int | `10` | ReplicaSets for this Deployment you want to retain (Default: 10) |
 | `permissions.operator.restrict.secret` | bool | `false` | Restrict Secret Access for KEDA operator |
 | `podAnnotations.keda` | object | `{}` | Pod annotations for KEDA operator |
-| `podDisruptionBudget.operator` | object | `{"minAvailable":1}` | Capability to configure [Pod Disruption Budget] |
+| `podDisruptionBudget.operator` | object | `{}` | Capability to configure [Pod Disruption Budget] |
 | `podLabels.keda` | object | `{}` | Pod labels for KEDA operator |
 | `podSecurityContext.operator` | object | [See below](#KEDA-is-secure-by-default) | [Pod security context] of the KEDA operator pod |
 | `resources.operator` | object | `{"limits":{"cpu":1,"memory":"1000Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Manage [resource request & limits] of KEDA operator pod |
@@ -173,7 +173,7 @@ their default values.
 | `metricsServer.useHostNetwork` | bool | `false` | Enable metric server to use host network |
 | `permissions.metricServer.restrict.secret` | bool | `false` | Restrict Secret Access for Metrics Server |
 | `podAnnotations.metricsAdapter` | object | `{}` | Pod annotations for KEDA Metrics Adapter |
-| `podDisruptionBudget.metricServer` | object | `{"minAvailable":1}` | Capability to configure [Pod Disruption Budget] |
+| `podDisruptionBudget.metricServer` | object | `{}` | Capability to configure [Pod Disruption Budget] |
 | `podLabels.metricsAdapter` | object | `{}` | Pod labels for KEDA Metrics Adapter |
 | `podSecurityContext.metricServer` | object | [See below](#KEDA-is-secure-by-default) | [Pod security context] of the KEDA metrics apiserver pod |
 | `resources.metricServer` | object | `{"limits":{"cpu":1,"memory":"1000Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Manage [resource request & limits] of KEDA metrics apiserver pod |
@@ -292,7 +292,7 @@ their default values.
 | `logging.webhooks.level` | string | `"info"` | Logging level for KEDA Operator. allowed values: `debug`, `info`, `error`, or an integer value greater than 0, specified as string |
 | `logging.webhooks.timeEncoding` | string | `"rfc3339"` | Logging time encoding for KEDA Operator. allowed values are `epoch`, `millis`, `nano`, `iso8601`, `rfc3339` or `rfc3339nano` |
 | `podAnnotations.webhooks` | object | `{}` | Pod annotations for KEDA Admission webhooks |
-| `podDisruptionBudget.webhooks` | object | `{"minAvailable":1}` | Capability to configure [Pod Disruption Budget] |
+| `podDisruptionBudget.webhooks` | object | `{}` | Capability to configure [Pod Disruption Budget] |
 | `podLabels.webhooks` | object | `{}` | Pod labels for KEDA Admission webhooks |
 | `podSecurityContext.webhooks` | object | [See below](#KEDA-is-secure-by-default) | [Pod security context] of the KEDA admission webhooks |
 | `resources.webhooks` | object | `{"limits":{"cpu":"50m","memory":"100Mi"},"requests":{"cpu":"10m","memory":"10Mi"}}` | Manage [resource request & limits] of KEDA admission webhooks pod |
