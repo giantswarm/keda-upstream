@@ -124,7 +124,7 @@ their default values.
 | `operator.replicaCount` | int | `1` | Capability to configure the number of replicas for KEDA operator. While you can run more replicas of our operator, only one operator instance will be the leader and serving traffic. You can run multiple replicas, but they will not improve the performance of KEDA, it could only reduce downtime during a failover. Learn more in [our documentation](https://keda.sh/docs/latest/operate/cluster/#high-availability). |
 | `permissions.operator.restrict.secret` | bool | `false` | Restrict Secret Access for KEDA operator |
 | `podAnnotations.keda` | object | `{}` | Pod annotations for KEDA operator |
-| `podDisruptionBudget.operator` | object | `{"minAvailable":1}` | Capability to configure [Pod Disruption Budget] |
+| `podDisruptionBudget.operator` | object | `{}` | Capability to configure [Pod Disruption Budget] |
 | `podLabels.keda` | object | `{}` | Pod labels for KEDA operator |
 | `podSecurityContext.operator` | object | [See below](#KEDA-is-secure-by-default) | [Pod security context] of the KEDA operator pod |
 | `prometheus.operator.enabled` | bool | `true` | Enable KEDA Operator prometheus metrics expose |
@@ -177,7 +177,7 @@ their default values.
 | `metricsServer.useHostNetwork` | bool | `false` | Enable metric server to use host network |
 | `permissions.metricServer.restrict.secret` | bool | `false` | Restrict Secret Access for Metrics Server |
 | `podAnnotations.metricsAdapter` | object | `{}` | Pod annotations for KEDA Metrics Adapter |
-| `podDisruptionBudget.metricServer` | object | `{"minAvailable":1}` | Capability to configure [Pod Disruption Budget] |
+| `podDisruptionBudget.metricServer` | object | `{}` | Capability to configure [Pod Disruption Budget] |
 | `podLabels.metricsAdapter` | object | `{}` | Pod labels for KEDA Metrics Adapter |
 | `podSecurityContext.metricServer` | object | [See below](#KEDA-is-secure-by-default) | [Pod security context] of the KEDA metrics apiserver pod |
 | `prometheus.metricServer.enabled` | bool | `true` | Enable metric server Prometheus metrics expose |
@@ -227,7 +227,7 @@ their default values.
 | `logging.webhooks.level` | string | `"info"` | Logging level for KEDA Operator. allowed values: `debug`, `info`, `error`, or an integer value greater than 0, specified as string |
 | `logging.webhooks.timeEncoding` | string | `"rfc3339"` | Logging time encoding for KEDA Operator. allowed values are `epoch`, `millis`, `nano`, `iso8601`, `rfc3339` or `rfc3339nano` |
 | `podAnnotations.webhooks` | object | `{}` | Pod annotations for KEDA Admission webhooks |
-| `podDisruptionBudget.webhooks` | object | `{"minAvailable":1}` | Capability to configure [Pod Disruption Budget] |
+| `podDisruptionBudget.webhooks` | object | `{}` | Capability to configure [Pod Disruption Budget] |
 | `podLabels.webhooks` | object | `{}` | Pod labels for KEDA Admission webhooks |
 | `podSecurityContext.webhooks` | object | [See below](#KEDA-is-secure-by-default) | [Pod security context] of the KEDA admission webhooks |
 | `prometheus.webhooks.enabled` | bool | `true` | Enable KEDA admission webhooks prometheus metrics expose |
