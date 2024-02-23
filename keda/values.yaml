@@ -166,17 +166,19 @@ networkPolicy:
 
 podDisruptionBudget:
   # -- Capability to configure [Pod Disruption Budget]
-  operator:
-    minAvailable: 1
-    # maxUnavailable: 1
+  operator: {}
+    #  minAvailable: 1
+    #  maxUnavailable: 1
+
   # -- Capability to configure [Pod Disruption Budget]
-  metricServer:
-    minAvailable: 1
-    # maxUnavailable: 1
+  metricServer: {}
+    #  minAvailable: 1
+    #  maxUnavailable: 1
+
   # -- Capability to configure [Pod Disruption Budget]
-  webhooks:
-    minAvailable: 1
-    # maxUnavailable: 1
+  webhooks: {}
+    #  minAvailable: 1
+    #  maxUnavailable: 1
 
 # -- Custom labels to add into metadata
 additionalLabels:
