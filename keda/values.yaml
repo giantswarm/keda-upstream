@@ -71,16 +71,6 @@ watchNamespace: ""
 # -- Name of secret to use to pull images to use to pull Docker images
 imagePullSecrets: []
 
-networkPolicy:
-  # -- Enable network policies
-  enabled: false
-  # -- Flavor of the network policies (cilium)
-  flavor: "cilium"
-  # -- Allow use of extra egress rules for cilium network policies
-  cilium:
-    operator:
-      extraEgressRules: []
-
 operator:
   # -- Name of the KEDA operator
   name: keda-operator
