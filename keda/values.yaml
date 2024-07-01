@@ -164,6 +164,7 @@ networkPolicy:
   #   operator:
   #     extraEgressRules: []
 
+
 podDisruptionBudget:
   # -- Capability to configure [Pod Disruption Budget]
   operator: {}

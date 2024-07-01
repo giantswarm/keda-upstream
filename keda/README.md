@@ -81,6 +81,7 @@ their default values.
 | `http.timeout` | int | `3000` | The default HTTP timeout to use for all scalers that use raw HTTP clients (some scalers use SDKs to access target services. These have built-in HTTP clients, and the timeout does not necessarily apply to them) |
 | `image.pullPolicy` | string | `"Always"` | Image pullPolicy for all KEDA components |
 | `imagePullSecrets` | list | `[]` | Name of secret to use to pull images to use to pull Docker images |
+| `networkPolicy.cilium` | object | `{"operator":{"extraEgressRules":[]}}` | Allow use of extra egress rules for cilium network policies |
 | `networkPolicy.enabled` | bool | `true` | Enable network policies |
 | `networkPolicy.flavor` | string | `"cilium"` | Flavor of the network policies (cilium) |
 | `nodeSelector` | object | `{}` | Node selector for pod scheduling ([docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/)) |
