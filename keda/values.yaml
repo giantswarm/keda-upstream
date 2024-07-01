@@ -160,9 +160,10 @@ networkPolicy:
   # -- Flavor of the network policies (cilium)
   flavor: "cilium"
   # -- Allow use of extra egress rules for cilium network policies
-  cilium:
-    operator:
-      extraEgressRules: []
+  # cilium:
+  #   operator:
+  #     extraEgressRules: []
+
 
 podDisruptionBudget:
   # -- Capability to configure [Pod Disruption Budget]
