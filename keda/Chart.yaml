@@ -1,3 +1,6 @@
+annotations:
+  io.giantswarm.application.team: atlas
+  ui.giantswarm.io/logo: https://raw.githubusercontent.com/kedacore/keda/main/images/keda-logo-500x500-white.png
 apiVersion: v2
 name: keda
 description: Event-based autoscaler for workloads on Kubernetes
@@ -18,9 +21,5 @@ icon: https://raw.githubusercontent.com/kedacore/keda/main/images/keda-logo-500x
 sources:
   - https://github.com/kedacore/keda
 maintainers:
-  - name: Jorge Turrado
-    email: jorge_turrado@hotmail.es
-  - name: Zbynek Roubalik
-    email: zbynek@kedify.io
-  - name: Jan Wozniak
-    email: jan@kedify.io
+  - name: giantswarm/team-atlas
+    email: team-atlas@giantswarm.io
