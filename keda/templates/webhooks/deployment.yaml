@@ -81,6 +81,8 @@ spec:
           - "--zap-time-encoding={{ .Values.logging.webhooks.timeEncoding }}"
           - "--cert-dir={{ .Values.certificates.mountPath }}"
           - "--health-probe-bind-address=:{{ .Values.webhooks.healthProbePort }}"
+          - "--kube-api-qps={{ .Values.webhooks.kubeAPIQPS }}"
+          - "--kube-api-burst={{ .Values.webhooks.kubeAPIBurst }}"
           {{- if .Values.webhooks.port }}
           - "--port={{ .Values.webhooks.port }}"
           {{- end }}
@@ -179,5 +181,9 @@ spec:
       {{- if $dnsConfig }}
       dnsConfig:
       {{- toYaml $dnsConfig | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
 {{- end }}
