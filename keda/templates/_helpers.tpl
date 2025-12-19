@@ -26,6 +26,8 @@ Generate basic labels
 {{- define "keda.labels" -}}
 {{- include "keda.crd-labels" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+giantswarm.io/service-type: managed
+application.giantswarm.io/team: {{ index .Chart.Annotations "application.giantswarm.io/team" | quote }}
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels }}
 {{- end }}
