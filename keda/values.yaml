@@ -5,28 +5,40 @@
 global:
   image:
     # -- Global image registry of KEDA components
-    registry: null
+    registry: gsoci.azurecr.io
+  # -- DNS config for KEDA components
+  dnsConfig: {}
+  # nameservers:
+  #   - 1.2.3.4
+  # searches:
+  #   - ns1.svc.cluster-domain.example
+  #   - my.dns.search.suffix
+  # options:
+  #   - name: ndots
+  #     value: "1"
+  #   - name: attempts
+  #     value: "3"
 
 image:
   keda:
     # -- Image registry of KEDA operator
-    registry: ghcr.io
+    registry: null
     # -- Image name of KEDA operator
-    repository: kedacore/keda
+    repository: giantswarm/keda
     # -- Image tag of KEDA operator. Optional, given app version of Helm chart is used by default
     tag: ""
   metricsApiServer:
     # -- Image registry of KEDA Metrics API Server
-    registry: ghcr.io
+    registry: null
     # -- Image name of KEDA Metrics API Server
-    repository: kedacore/keda-metrics-apiserver
+    repository: giantswarm/keda-metrics-apiserver
     # -- Image tag of KEDA Metrics API Server. Optional, given app version of Helm chart is used by default
     tag: ""
   webhooks:
     # -- Image registry of KEDA admission-webhooks
-    registry: ghcr.io
+    registry: null
     # -- Image name of KEDA admission-webhooks
-    repository: kedacore/keda-admission-webhooks
+    repository: giantswarm/keda-admission-webhooks
     # -- Image tag of KEDA admission-webhooks . Optional, given app version of Helm chart is used by default
     tag: ""
   # -- Image pullPolicy for all KEDA components
@@ -37,6 +49,24 @@ clusterName: kubernetes-default
 
 # -- Kubernetes cluster domain
 clusterDomain: cluster.local
+
+verticalPodAutoscaler:
+  keda:
+    enabled: true
+    cpu:
+      minAllowed: 20m
+      maxAllowed: 2
+    memory:
+      minAllowed: 200Mi
+      maxAllowed: 2Gi
+  metricsApiServer:
+    enabled: true
+    cpu:
+      minAllowed: 20m
+      maxAllowed: 2
+    memory:
+      minAllowed: 200Mi
+      maxAllowed: 2Gi
 
 crds:
   # -- Defines whether the KEDA CRDs have to be installed or not.
@@ -55,7 +85,7 @@ imagePullSecrets: []
 
 networkPolicy:
   # -- Enable network policies
-  enabled: false
+  enabled: true
   # -- Flavor of the network policies (cilium)
   flavor: "cilium"
   # -- Allow use of extra egress rules for cilium network policies
@@ -76,17 +106,28 @@ operator:
   # --Disable response compression for k8s restAPI in client-go.
   # Disabling compression simply means that turns off the process of making data smaller for K8s restAPI in client-go for faster transmission.
   disableCompression: true
+  # -- DNS config for KEDA operator pod
+  dnsConfig: {}
+  # use ClusterFirstWithHostNet if `useHostNetwork: true` https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+  # -- Defined the DNS policy for the operator
+  dnsPolicy: ClusterFirst
+  # -- Enable operator to use host network
+  useHostNetwork: false
+  # -- K8s client QPS (Queries Per Second) throttling for the KEDA operator
+  kubeAPIQPS: 20.0
+  # -- K8s client Burst throttling for the KEDA operator
+  kubeAPIBurst: 30
   # -- [Affinity] for pod scheduling for KEDA operator. Takes precedence over the `affinity` field
-  affinity: {}
-    # podAntiAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #   - labelSelector:
-    #       matchExpressions:
-    #       - key: app
-    #         operator: In
-    #         values:
-    #         - keda-operator
-    #     topologyKey: "kubernetes.io/hostname"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - keda-operator
+        topologyKey: "kubernetes.io/hostname"
   # -- Additional containers to run as part of the operator deployment
   extraContainers: []
     # - name: hello-many
@@ -137,16 +178,16 @@ metricsServer:
   # -- Enable metric server to use host network
   useHostNetwork: false
   # -- [Affinity] for pod scheduling for Metrics API Server. Takes precedence over the `affinity` field
-  affinity: {}
-    # podAntiAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #   - labelSelector:
-    #       matchExpressions:
-    #       - key: app
-    #         operator: In
-    #         values:
-    #         - keda-operator-metrics-apiserver
-    #     topologyKey: "kubernetes.io/hostname"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - keda-operator-metrics-apiserver
+        topologyKey: "kubernetes.io/hostname"
   # -- Liveness probes for Metrics API Server ([docs](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/))
   livenessProbe:
     initialDelaySeconds: 5
@@ -189,46 +230,50 @@ webhooks:
   useHostNetwork: false
   # -- Name of the KEDA admission webhooks
   name: keda-admission-webhooks
+  # -- K8s client QPS (Queries Per Second) throttling for the KEDA admission webhooks
+  kubeAPIQPS: 20.0
+  # -- K8s client Burst throttling for the KEDA admission webhooks
+  kubeAPIBurst: 30
   # -- ReplicaSets for this Deployment you want to retain (Default: 10)
   revisionHistoryLimit: 10
   # -- Capability to configure the number of replicas for KEDA admission webhooks
   replicaCount: 1
   # -- [Affinity] for pod scheduling for KEDA admission webhooks. Takes precedence over the `affinity` field
-  affinity: {}
-    # podAntiAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #   - labelSelector:
-    #       matchExpressions:
-    #       - key: app
-    #         operator: In
-    #         values:
-    #         - keda-admission-webhooks
-    #     topologyKey: "kubernetes.io/hostname"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - keda-operator
+        topologyKey: "kubernetes.io/hostname"
 
   # -- [Failure policy](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy) to use with KEDA admission webhooks
   failurePolicy: Ignore
 
 upgradeStrategy:
   # -- Capability to configure [Deployment upgrade strategy] for operator
-  operator: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
-    #   maxSurge: 1
+  operator:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
 
   # -- Capability to configure [Deployment upgrade strategy] for Metrics Api Server
-  metricsApiServer: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
-    #   maxSurge: 1
+  metricsApiServer:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
 
   # -- Capability to configure [Deployment upgrade strategy] for Admission webhooks
-  webhooks: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
-    #   maxSurge: 1
+  webhooks:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
 
 podDisruptionBudget:
   # -- Capability to configure [Pod Disruption Budget]
@@ -445,25 +490,25 @@ podSecurityContext:
   # @default -- [See below](#KEDA-is-secure-by-default)
   operator:
     runAsNonRoot: true
-    # runAsUser: 1000
-    # runAsGroup: 1000
-    # fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
 
   # -- [Pod security context] of the KEDA metrics apiserver pod
   # @default -- [See below](#KEDA-is-secure-by-default)
   metricServer:
     runAsNonRoot: true
-    # runAsUser: 1000
-    # runAsGroup: 1000
-    # fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
 
   # -- [Pod security context] of the KEDA admission webhooks
   # @default -- [See below](#KEDA-is-secure-by-default)
   webhooks:
     runAsNonRoot: true
-    # runAsUser: 1000
-    # runAsGroup: 1000
-    # fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
 
 service:
   # -- KEDA Metric Server service type
@@ -521,18 +566,17 @@ topologySpreadConstraints:
   webhooks: []
 
 # -- [Affinity] for pod scheduling for KEDA operator, Metrics API Server and KEDA admission webhooks.
-affinity: {}
-  # podAntiAffinity:
-  #   requiredDuringSchedulingIgnoredDuringExecution:
-  #   - labelSelector:
-  #       matchExpressions:
-  #       - key: app
-  #         operator: In
-  #         values:
-  #         - keda-operator
-  #         - keda-operator-metrics-apiserver
-  #         - keda-admission-webhooks
-  #     topologyKey: "kubernetes.io/hostname"
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - keda-operator
+          - keda-operator-metrics-apiserver
+      topologyKey: "kubernetes.io/hostname"
 
 # -- priorityClassName for all KEDA components
 priorityClassName: ""
@@ -605,7 +649,7 @@ volumes:
 prometheus:
   metricServer:
     # -- Enable metric server Prometheus metrics expose
-    enabled: false
+    enabled: true
     # -- HTTP port used for exposing metrics server prometheus metrics
     port: 8080
     # -- HTTP port name for exposing metrics server prometheus metrics
@@ -614,7 +658,7 @@ prometheus:
     # appProtocol: http
     serviceMonitor:
       # -- Enables ServiceMonitor creation for the Prometheus Operator
-      enabled: false
+      enabled: true
       # -- JobLabel selects the label from the associated Kubernetes service which will be used as the job label for all metrics. [ServiceMonitor Spec]
       jobLabel: ""
       # -- TargetLabels transfers labels from the Kubernetes `Service` onto the created metrics
@@ -632,7 +676,10 @@ prometheus:
       # -- DEPRECATED. List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
       relabellings: []
       # -- List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
-      relabelings: []
+      relabelings:
+      # Add app label.
+      - targetLabel: app
+        replacement: keda
       # -- List of expressions that define custom  metric relabeling rules for metric server ServiceMonitor crd after scrape has happened (prometheus operator). [RelabelConfig Spec]
       metricRelabelings: []
       # --  Additional labels to add for metric server using ServiceMonitor crd (prometheus operator)
@@ -662,14 +709,14 @@ prometheus:
       metricRelabelings: []
   operator:
     # -- Enable KEDA Operator prometheus metrics expose
-    enabled: false
+    enabled: true
     # -- Port used for exposing KEDA Operator prometheus metrics
     port: 8080
     # -- App Protocol for service when scraping metrics endpoint
     # appProtocol: http
     serviceMonitor:
       # -- Enables ServiceMonitor creation for the Prometheus Operator
-      enabled: false
+      enabled: true
       # -- JobLabel selects the label from the associated Kubernetes service which will be used as the job label for all metrics. [ServiceMonitor Spec]
       jobLabel: ""
       # -- TargetLabels transfers labels from the Kubernetes `Service` onto the created metrics
@@ -688,7 +735,10 @@ prometheus:
       # -- DEPRECATED. List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
       relabellings: []
       # -- List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
-      relabelings: []
+      relabelings:
+      # Add app label.
+      - targetLabel: app
+        replacement: keda
       # -- List of expressions that define custom  metric relabeling rules for metric server ServiceMonitor crd after scrape has happened (prometheus operator). [RelabelConfig Spec]
       metricRelabelings: []
       # -- Additional labels to add for metric server using ServiceMonitor crd (prometheus operator)
@@ -735,14 +785,14 @@ prometheus:
         #   labels:
   webhooks:
     # -- Enable KEDA admission webhooks prometheus metrics expose
-    enabled: false
+    enabled: true
     # -- Port used for exposing KEDA admission webhooks prometheus metrics
     port: 8080
     # -- App Protocol for service when scraping metrics endpoint
     # appProtocol: http
     serviceMonitor:
       # -- Enables ServiceMonitor creation for the Prometheus webhooks
-      enabled: false
+      enabled: true
       # -- jobLabel selects the label from the associated Kubernetes service which will be used as the job label for all metrics. [ServiceMonitor Spec]
       jobLabel: ""
       # -- TargetLabels transfers labels from the Kubernetes `Service` onto the created metrics
@@ -760,7 +810,10 @@ prometheus:
       # -- DEPRECATED. List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
       relabellings: []
       # -- List of expressions that define custom relabeling rules for metric server ServiceMonitor crd (prometheus operator). [RelabelConfig Spec]
-      relabelings: []
+      relabelings:
+      # Add app label.
+      - targetLabel: app
+        replacement: keda
       # -- List of expressions that define custom  metric relabeling rules for metric server ServiceMonitor crd after scrape has happened (prometheus operator). [RelabelConfig Spec]
       metricRelabelings: []
       # -- Additional labels to add for metric server using ServiceMonitor crd (prometheus operator)
@@ -788,8 +841,8 @@ opentelemetry:
     # -- Uri of OpenTelemetry Collector to push telemetry to
     uri: ""
   operator:
-      # -- Enable pushing metrics to an OpenTelemetry Collector for operator
-      enabled: false
+    # -- Enable pushing metrics to an OpenTelemetry Collector for operator
+    enabled: false
 
 certificates:
   # -- Enables the self generation for KEDA TLS certificates inside KEDA operator
@@ -800,7 +853,7 @@ certificates:
   mountPath: /certs
   certManager:
     # -- Enables Cert-manager for certificate management
-    enabled: false
+    enabled: true
     # -- Certificate duration
     duration: 8760h0m0s # 1 year
     # -- Certificate renewal time before expiration
@@ -875,4 +928,3 @@ customManagedBy: ""
 # -- Enable service links in pods. Although enabled, mirroring k8s default, it is highly recommended to disable,
 # due to its legacy status [Legacy container links](https://docs.docker.com/engine/network/links/)
 enableServiceLinks: true
-
